@@ -1,0 +1,26 @@
+name: Compilar e testar
+
+# Compila todos os projetos e roda os testes a cada push e pull request
+on:
+  push:
+  pull_request:
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependências (ncurses e Valgrind)
+        run: sudo apt-get update && sudo apt-get install -y libncurses-dev valgrind
+
+      - name: Compilar todos os projetos (falha se houver qualquer aviso)
+        run: |
+          make 2>&1 | tee compilacao.log
+          ! grep -i "warning" compilacao.log
+
+      - name: Rodar os testes
+        run: make test
+
+      - name: Procurar vazamentos de memória (Valgrind)
+        run: make -C estruturas-de-dados valgrind

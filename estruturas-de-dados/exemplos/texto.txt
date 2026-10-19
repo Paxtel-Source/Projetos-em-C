@@ -1,0 +1,8 @@
+Estruturas de dados são formas de organizar a informação na memória do computador.
+Uma lista ligada guarda os elementos em nós, e cada nó aponta para o próximo.
+Uma pilha funciona como uma pilha de pratos: o último prato colocado é o primeiro a sair.
+Uma fila funciona como a fila do banco: quem chega primeiro é atendido primeiro.
+Uma árvore binária de busca guarda os dados em ordem, e a busca descarta metade da árvore a cada passo.
+Uma tabela hash transforma a chave em uma posição do vetor, e por isso a busca é muito rápida.
+Escolher a estrutura certa para cada problema é uma das decisões mais importantes da programação.
+A estrutura errada deixa o programa lento; a estrutura certa deixa o programa rápido e simples.

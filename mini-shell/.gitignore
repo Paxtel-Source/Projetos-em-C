@@ -1,0 +1,19 @@
+# Pastas de compilação
+build/
+bin/
+
+# Objetos e binários
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+
+# Arquivos do editor / sistema
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
