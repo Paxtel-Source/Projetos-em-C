@@ -1,7 +1,7 @@
 # ===== Configuração =====
 TARGET  := agenda
 CC      := gcc
-CFLAGS  := -std=c11 -Wall -Wextra -Wpedantic -O2 -Iinclude
+CFLAGS  := -std=c11 -Wall -Wextra -Wpedantic -O2 -Iinclude $(EXTRA_CFLAGS)
 LDLIBS  :=
 
 SRC_DIR := src
@@ -17,8 +17,12 @@ SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 BIN  := $(BIN_DIR)/$(TARGET)$(EXE)
 
+# Os testes usam todo o código, menos o main.c
+LIB_OBJS := $(filter-out $(OBJ_DIR)/main.o,$(OBJS))
+TEST_BIN := $(BIN_DIR)/testes$(EXE)
+
 # ===== Regras =====
-.PHONY: all run clean
+.PHONY: all run test clean
 
 all: $(BIN)
 
@@ -33,6 +37,15 @@ $(OBJ_DIR) $(BIN_DIR):
 
 run: $(BIN)
 	./$(BIN)
+
+test: $(TEST_BIN)
+	./$(TEST_BIN)
+
+$(TEST_BIN): $(OBJ_DIR)/testes.o $(LIB_OBJS) | $(BIN_DIR)
+	$(CC) $^ -o $@ $(LDLIBS)
+
+$(OBJ_DIR)/testes.o: tests/testes.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)

@@ -19,6 +19,8 @@ jogo-da-velha/
 ├── src/
 │   ├── tabuleiro.c   # Regras: jogar, exibir e verificar vencedor
 │   └── main.c        # Laço do jogo, turnos e placar
+├── tests/
+│   └── testes.c      # Testes automáticos (make test)
 ├── Makefile
 └── README.md
 ```
@@ -43,7 +45,11 @@ jogo-da-velha/
    ```bash
    ./bin/jogo-da-velha
    ```
-4. Para apagar os arquivos compilados:
+4. Para rodar os testes:
+   ```bash
+   make test
+   ```
+5. Para apagar os arquivos compilados:
    ```bash
    make clean
    ```

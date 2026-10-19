@@ -37,7 +37,7 @@ static void menu(void)
 
 static void opcao_adicionar(Agenda *agenda)
 {
-    Contato c;
+    Contato c = {0}; /* Campos vazios caso a entrada termine no meio (EOF) */
 
     if (!ler_linha("Nome: ", c.nome, sizeof c.nome) || c.nome[0] == '\0') {
         printf("Nome nao pode ficar vazio.\n");
@@ -55,6 +55,12 @@ static void opcao_adicionar(Agenda *agenda)
         break;
     case -2:
         printf("Ja existe um contato com esse nome.\n");
+        break;
+    case -3:
+        printf("Nome nao pode ficar vazio.\n");
+        break;
+    case -4:
+        printf("Os campos nao podem conter '%c'.\n", SEPARADOR);
         break;
     }
 }
@@ -83,9 +89,30 @@ static void opcao_remover(Agenda *agenda)
     }
 }
 
+/*
+ * Guarda o arquivo corrompido como "<arquivo>.bak" para que ele não seja
+ * sobrescrito ao sair. Retorna 1 se for seguro gravar no arquivo original.
+ */
+static int guardar_arquivo_corrompido(const char *arquivo)
+{
+    char backup[FILENAME_MAX];
+
+    if (snprintf(backup, sizeof backup, "%s.bak", arquivo) < (int)sizeof backup) {
+        remove(backup);
+        if (rename(arquivo, backup) == 0) {
+            fprintf(stderr, "Aviso: '%s' esta corrompido. Uma copia foi guardada em '%s' "
+                            "e a agenda comeca vazia.\n", arquivo, backup);
+            return 1;
+        }
+    }
+    fprintf(stderr, "Aviso: '%s' esta corrompido e nao foi possivel copia-lo. "
+                    "Nada sera gravado ao sair, para nao perder os dados.\n", arquivo);
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
-    /* Permite escolher outro arquivo: ./bin/agenda meus_contatos.dat */
+    /* Permite escolher outro arquivo: ./bin/agenda meus_contatos.csv */
     const char *arquivo = (argc > 1) ? argv[1] : ARQUIVO_PADRAO;
 
     Agenda *agenda = malloc(sizeof *agenda);
@@ -94,8 +121,9 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    int pode_salvar = 1;
     if (agenda_carregar(agenda, arquivo) != 0) {
-        fprintf(stderr, "Aviso: arquivo '%s' corrompido. Iniciando agenda vazia.\n", arquivo);
+        pode_salvar = guardar_arquivo_corrompido(arquivo);
     }
 
     char entrada[16];
@@ -129,7 +157,9 @@ int main(int argc, char *argv[])
     }
 
     int status = EXIT_SUCCESS;
-    if (agenda_salvar(agenda, arquivo) != 0) {
+    if (!pode_salvar) {
+        printf("Ate mais!\n");
+    } else if (agenda_salvar(agenda, arquivo) != 0) {
         fprintf(stderr, "Erro ao salvar em '%s'.\n", arquivo);
         status = EXIT_FAILURE;
     } else {

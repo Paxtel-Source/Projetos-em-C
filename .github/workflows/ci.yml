@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compilar-e-testar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+
+      # -Werror: qualquer aviso do compilador quebra o build
+      - name: Compilar com ${{ matrix.cc }}
+        run: make CC=${{ matrix.cc }} EXTRA_CFLAGS=-Werror
+
+      - name: Rodar os testes
+        run: make test CC=${{ matrix.cc }} EXTRA_CFLAGS=-Werror

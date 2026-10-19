@@ -19,6 +19,8 @@ calculadora/
 ├── src/
 │   ├── calculadora.c   # Lógica das operações e validação
 │   └── main.c          # Interface com o usuário
+├── tests/
+│   └── testes.c        # Testes automáticos (make test)
 ├── Makefile
 └── README.md
 ```
@@ -49,7 +51,11 @@ calculadora/
    ```bash
    ./bin/calculadora
    ```
-5. Para apagar os arquivos compilados:
+5. Para rodar os testes:
+   ```bash
+   make test
+   ```
+6. Para apagar os arquivos compilados:
    ```bash
    make clean
    ```

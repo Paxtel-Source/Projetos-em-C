@@ -57,6 +57,14 @@ static void modo_interativo(void)
         if (fgets(linha, sizeof linha, stdin) == NULL) {
             break;
         }
+        if (strchr(linha, '\n') == NULL && !feof(stdin)) {
+            /* Linha maior que o buffer: descarta o restante para não virar outra entrada */
+            int ch;
+            while ((ch = getchar()) != '\n' && ch != EOF) {
+            }
+            fprintf(stderr, "Linha muito longa (maximo %d caracteres).\n", (int)sizeof linha - 2);
+            continue;
+        }
         linha[strcspn(linha, "\n")] = '\0';
 
         if (strcmp(linha, "sair") == 0) {

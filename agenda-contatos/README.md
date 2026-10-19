@@ -1,6 +1,6 @@
 # 📒 Agenda de Contatos (CRUD em Arquivo)
 
-Sistema de terminal em C para **adicionar, listar, buscar e remover** contatos. Os dados ficam salvos em um **arquivo binário** (`contatos.dat`), então continuam lá na próxima vez que o programa for aberto.
+Sistema de terminal em C para **adicionar, listar, buscar e remover** contatos. Os dados ficam salvos em um **arquivo de texto** (`contatos.csv`), então continuam lá na próxima vez que o programa for aberto.
 
 ## Funcionalidades
 
@@ -8,8 +8,9 @@ Sistema de terminal em C para **adicionar, listar, buscar e remover** contatos. 
 - **Listar** todos os contatos em formato de tabela
 - **Buscar** por trecho do nome, telefone ou e-mail (sem diferenciar maiúsculas)
 - **Remover** contato pelo nome
-- Salvamento automático ao sair, com `fopen`, `fwrite` e `fclose`
-- Carregamento ao iniciar, com `fopen`, `fread` e `fclose`
+- Salvamento automático ao sair, com `fopen`, `fprintf` e `fclose`, gravando primeiro num arquivo temporário para não corromper o original
+- Carregamento ao iniciar, com `fopen`, `fgets` e `fclose`
+- Se o arquivo estiver corrompido, ele é guardado como `contatos.csv.bak` antes de qualquer gravação
 
 ## Estrutura
 
@@ -20,6 +21,8 @@ agenda-contatos/
 ├── src/
 │   ├── agenda.c    # CRUD e leitura/gravação do arquivo
 │   └── main.c      # Menu e interação com o usuário
+├── tests/
+│   └── testes.c    # Testes do CRUD e do arquivo (make test)
 ├── Makefile
 └── README.md
 ```
@@ -46,9 +49,13 @@ agenda-contatos/
    ```
    Opcionalmente, informe outro arquivo de dados:
    ```bash
-   ./bin/agenda meus_contatos.dat
+   ./bin/agenda meus_contatos.csv
    ```
-4. Para apagar os arquivos compilados:
+4. Para rodar os testes:
+   ```bash
+   make test
+   ```
+5. Para apagar os arquivos compilados:
    ```bash
    make clean
    ```
@@ -73,8 +80,14 @@ Total: 1 contato(s)
 
 ## Formato do arquivo
 
-O `contatos.dat` guarda primeiro a quantidade de contatos (`size_t`) e, em seguida, o vetor de structs `Contato`. Ele é ignorado pelo Git (veja o `.gitignore`), pois são dados pessoais de cada usuário.
+O `contatos.csv` tem um contato por linha, com os campos separados por `;`:
+
+```
+Maria Silva;84 99999-0000;maria@email.com
+```
+
+Por isso nenhum campo pode conter `;`. Como é texto, o arquivo funciona em qualquer sistema e compilador, e dá para abrir no editor ou no Excel. Ele é ignorado pelo Git (veja o `.gitignore`), pois são dados pessoais de cada usuário.
 
 ## Conceitos praticados
 
-`struct`, vetores de structs, manipulação de arquivos binários (`fopen`, `fread`, `fwrite`, `fclose`), `memmove`, alocação dinâmica com `malloc`/`free`, leitura segura com `fgets`.
+`struct`, vetores de structs, manipulação de arquivos de texto (`fopen`, `fgets`, `fprintf`, `fclose`, `rename`), `memmove`, alocação dinâmica com `malloc`/`free`, leitura segura com `fgets`.

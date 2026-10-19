@@ -31,6 +31,8 @@ conversor-bases/
 ├── src/
 │   ├── conversor.c   # Parsing e conversões (bitwise)
 │   └── main.c        # Interface com o usuário
+├── tests/
+│   └── testes.c      # Testes automáticos (make test)
 ├── Makefile
 └── README.md
 ```
@@ -61,7 +63,11 @@ conversor-bases/
    ```bash
    ./bin/conversor
    ```
-5. Para apagar os arquivos compilados:
+5. Para rodar os testes:
+   ```bash
+   make test
+   ```
+6. Para apagar os arquivos compilados:
    ```bash
    make clean
    ```

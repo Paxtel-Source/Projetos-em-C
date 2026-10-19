@@ -20,3 +20,6 @@ Thumbs.db
 
 # Dados gerados pelo programa
 *.dat
+*.csv
+*.bak
+*.tmp

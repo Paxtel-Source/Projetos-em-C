@@ -4,6 +4,21 @@
 
 #include "tabuleiro.h"
 
+/* Lê uma linha sem o '\n'. Se ela não couber no buffer, descarta o resto. Retorna 0 em EOF. */
+static int ler_linha(char *destino, int tamanho)
+{
+    if (fgets(destino, tamanho, stdin) == NULL) {
+        return 0;
+    }
+    if (strchr(destino, '\n') == NULL) {
+        int ch;
+        while ((ch = getchar()) != '\n' && ch != EOF) {
+        }
+    }
+    destino[strcspn(destino, "\n")] = '\0';
+    return 1;
+}
+
 /* Lê a posição digitada (1-9). Retorna -1 em EOF e 0 se a entrada for inválida. */
 static int ler_posicao(char jogador)
 {
@@ -13,13 +28,13 @@ static int ler_posicao(char jogador)
     printf("Jogador %c, escolha uma posicao (1-9): ", jogador);
     fflush(stdout);
 
-    if (fgets(linha, sizeof linha, stdin) == NULL) {
+    if (!ler_linha(linha, sizeof linha)) {
         return -1;
     }
-    linha[strcspn(linha, "\n")] = '\0';
 
     long valor = strtol(linha, &fim, 10);
-    if (fim == linha || *fim != '\0') {
+    /* Confere a faixa antes de converter para int, para "4294967297" não virar 1 */
+    if (fim == linha || *fim != '\0' || valor < 1 || valor > TAM * TAM) {
         return 0;
     }
     return (int)valor;
@@ -81,7 +96,7 @@ int main(void)
         printf("\nPlacar -> X: %d | O: %d | Empates: %d\n", vitorias_x, vitorias_o, empates);
         printf("Jogar novamente? (s/n): ");
         fflush(stdout);
-    } while (fgets(resposta, sizeof resposta, stdin) != NULL &&
+    } while (ler_linha(resposta, sizeof resposta) &&
              (resposta[0] == 's' || resposta[0] == 'S'));
 
     printf("Obrigado por jogar!\n");
