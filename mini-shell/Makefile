@@ -39,4 +39,4 @@ clean:
 
 # Testes automatizados: alimenta o shell com comandos e confere a saída
 test: $(BIN)
-   	bash tests/testar.sh ./$(BIN)
+	bash tests/testar.sh ./$(BIN)
